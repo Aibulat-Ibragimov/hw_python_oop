@@ -24,6 +24,7 @@ class Training:
     """Базовый класс тренировки."""
     M_IN_KM: float = 1000
     LEN_STEP: float = 0.65
+    M_IN_H: float = 60
 
     def __init__(self,
                  action: int,
@@ -57,12 +58,12 @@ class Training:
 
 class Running(Training):
     """Тренировка: бег."""
+    CALORIES_MEAN_SPEED_MULTIPLIER = 18
+    CALORIES_MEAN_SPEED_SHIFT = 1.79
 
     def get_spent_calories(self) -> float:
-        CALORIES_MEAN_SPEED_MULTIPLIER = 18
-        CALORIES_MEAN_SPEED_SHIFT = 1.79
-        return ((CALORIES_MEAN_SPEED_MULTIPLIER
-                 * self.get_mean_speed() + CALORIES_MEAN_SPEED_SHIFT)
+        return ((self.CALORIES_MEAN_SPEED_MULTIPLIER
+                 * self.get_mean_speed() + self.CALORIES_MEAN_SPEED_SHIFT)
                 * self.weight / self.M_IN_KM * self.duration)
 
 
@@ -72,7 +73,7 @@ class SportsWalking(Training):
     K_2: float = 0.029
     S_IN_H: float = 3600
     SM_IN_M: float = 100
-    M_IN_H: float = 60
+    KM_H_IN_M_S: float = 0.278
 
     def __init__(
             self, action: int, duration: float, weight: float,
@@ -82,15 +83,16 @@ class SportsWalking(Training):
 
     def get_spent_calories(self) -> float:
         return ((self.K_1 * self.weight
-                 + ((self.get_mean_speed() * self.M_IN_KM
-                    / self.S_IN_H) ** 2 / self.height / self.SM_IN_M)
-                 * self.K_2 * self.weight) * self.duration * self.M_IN_H)
+                 + ((self.get_mean_speed() * self.KM_H_IN_M_S) ** 2
+                    / self.height / self.SM_IN_M) * self.K_2
+                 * self.weight) * self.duration * self.M_IN_H)
 
 
 class Swimming(Training):
     """Тренировка: плавание."""
     LEN_STEP: float = 1.38
     K_1: float = 1.1
+    SQUARE: float = 2
 
     def __init__(
             self, action: int, duration: float, weight: float,
@@ -104,7 +106,7 @@ class Swimming(Training):
                 / self.duration)
 
     def get_spent_calories(self) -> float:
-        return ((self.get_mean_speed() + self.K_1) * 2 * self.weight)
+        return ((self.get_mean_speed() + self.K_1) * self.SQUARE * self.weight)
 
 
 def get_count_args(obj: type[Training]) -> int:
@@ -142,4 +144,5 @@ if __name__ == '__main__':
     ]
 
     for workout_type, data in packages:
-        main(read_package(workout_type, data))
+        training = read_package(workout_type, data)
+        main(training)
