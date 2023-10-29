@@ -80,7 +80,7 @@ class SportsWalking(Training):
     K_WEIGHT_1: float = 0.035
     K_WEIGHT_2: float = 0.029
     SM_IN_M: float = 100
-    KM_H_IN_M_S: float = 1000 / 60 / 60
+    KM_H_IN_M_S: float = 0.278  # M_IN_KM / MIN / SEK
     SQUARE: float = 2
 
     def __init__(
