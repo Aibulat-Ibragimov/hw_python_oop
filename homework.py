@@ -111,7 +111,7 @@ class Swimming(Training):
 
     def get_spent_calories(self) -> float:
         return ((self.get_mean_speed() + self.K_1) * self.SQUARE
-                * self.duration * self.M_IN_H)
+                * self.duration * self.weight)
 
 
 def get_count_args(obj: type[Training]) -> int:
