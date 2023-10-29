@@ -104,13 +104,14 @@ class Swimming(Training):
 
     def get_distance(self) -> float:
         return self.action * self.LEN_STEP / self.M_IN_KM
-    
+
     def get_mean_speed(self) -> float:
         return (self.length_pool * self.count_pool / self.M_IN_KM
                 / self.duration)
 
     def get_spent_calories(self) -> float:
-        return ((self.get_mean_speed() + self.K_1) * self.SQUARE * self.duration)
+        return ((self.get_mean_speed() + self.K_1) * self.SQUARE
+                * self.duration)
 
 
 def get_count_args(obj: type[Training]) -> int:
