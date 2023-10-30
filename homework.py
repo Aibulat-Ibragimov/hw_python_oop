@@ -26,6 +26,7 @@ class Training:
     M_IN_KM: float = 1000
     LEN_STEP: float = 0.65
     M_IN_H: float = 60
+    SEC_IN_M: float = 60
 
     def __init__(self,
                  action: int,
@@ -77,10 +78,12 @@ class Running(Training):
 class SportsWalking(Training):
     """Тренировка: спортивная ходьба."""
 
-    K_WEIGHT_1: float = 0.035
-    K_WEIGHT_2: float = 0.029
+    K_WEIGHT: float = 0.035
+    K_NUTHON: float = 0.029
     SM_IN_M: float = 100
-    KM_H_IN_M_S: float = 0.278  # M_IN_KM / MIN / SEK
+    KM_H_IN_M_S: float = round(Training.M_IN_KM
+                               / (Training.M_IN_H
+                                  * Training.SEC_IN_M), 3)
     SQUARE: float = 2
 
     def __init__(
@@ -90,14 +93,14 @@ class SportsWalking(Training):
         self.height = height
 
     def get_spent_calories(self) -> float:
-        return ((self.K_WEIGHT_1
+        return ((self.K_WEIGHT
                  * self.weight
                  + ((self.get_mean_speed()
                      * self.KM_H_IN_M_S)
                     ** self.SQUARE
                     / (self.height
                        / self.SM_IN_M))
-                 * self.K_WEIGHT_2
+                 * self.K_NUTHON
                  * self.weight)
                 * self.duration
                 * self.M_IN_H)
@@ -145,10 +148,10 @@ training_classes: dict[str, tuple[type[Training], int]] = {
 def read_package(workout_type: str, data: list[int]) -> Training:
     """Прочитать данные полученные от датчиков."""
     if workout_type not in training_classes:
-        raise ValueError('Неизвестный тип тренировки: {workout_type}')
+        raise ValueError(f'Неизвестный тип тренировки: {workout_type}')
     class_, expected = training_classes[workout_type]
     if len(data) != expected:
-        raise ValueError('Некорректное количество аргументов {data}')
+        raise ValueError(f'Некорректное количество аргументов {data}')
 
     return class_(*data)
 
