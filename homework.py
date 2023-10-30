@@ -79,7 +79,7 @@ class SportsWalking(Training):
     """Тренировка: спортивная ходьба."""
 
     K_WEIGHT: float = 0.035
-    K_NUTHON: float = 0.029
+    K_WEIGHT_MULTIPLIER: float = 0.029
     SM_IN_M: float = 100
     KM_H_IN_M_S: float = round(Training.M_IN_KM
                                / (Training.M_IN_H
@@ -100,7 +100,7 @@ class SportsWalking(Training):
                     ** self.SQUARE
                     / (self.height
                        / self.SM_IN_M))
-                 * self.K_NUTHON
+                 * self.K_WEIGHT_MULTIPLIER
                  * self.weight)
                 * self.duration
                 * self.M_IN_H)
@@ -151,7 +151,8 @@ def read_package(workout_type: str, data: list[int]) -> Training:
         raise ValueError(f'Неизвестный тип тренировки: {workout_type}')
     class_, expected = training_classes[workout_type]
     if len(data) != expected:
-        raise ValueError(f'Некорректное количество аргументов {data}')
+        raise ValueError(f'Некорректное количество аргументов {data}, '
+                         f'ожидаемое количество аргументов {expected}.')
 
     return class_(*data)
 
